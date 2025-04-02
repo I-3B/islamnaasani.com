@@ -1,6 +1,6 @@
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { cn } from "@/lib/utils";
-import { Github, Linkedin, Mail, Send } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 import { ComponentPropsWithoutRef, FC } from "react";
 export type FooterProps = {};
@@ -68,24 +68,17 @@ export const Footer: FC<FooterProps> = ({}) => {
             </svg>
           </FooterLink>
           <FooterLink
-            href={"https://t.me/islam_naasani"}
-            gradientProps={{ className: "from-purple-800 to-blue-600" }}
-          >
-            <Send aria-label="Telegram" className="pr-1 pt-[2px]" />
-          </FooterLink>
-          <FooterLink
-            href={"https://stackoverflow.com/users/14283533/i3b"}
-            gradientProps={{ className: "from-orange-400 to-orange-700" }}
+            gradientProps={{ className: "from-blue-300 to-blue-400" }}
+            href={"https://bsky.app/profile/islamnaasani.bsky.social"}
           >
             <svg
-              aria-label="Stack Overflow"
               xmlns="http://www.w3.org/2000/svg"
-              width="26"
-              height="26"
-              viewBox="2 2 20 20"
-              className="fill-white"
+              viewBox="0 0 511.999 452.266"
             >
-              <path d="M17.24 19.399v-4.804h1.6V21H4.381v-6.405h1.598v4.804H17.24zM7.582 17.8h8.055v-1.604H7.582V17.8zm.195-3.64 7.859 1.641.34-1.552-7.861-1.642-.338 1.553zm1.018-3.794 7.281 3.398.678-1.463-7.281-3.399-.678 1.454v.01zm2.037-3.589 6.166 5.142 1.018-1.216-6.162-5.14-1.016 1.213-.006.001zm3.982-3.778-1.311.969 4.803 6.454 1.313-.971-4.807-6.452h.002z"></path>
+              <path
+                fill="white"
+                d="M110.985 30.442c58.695 44.217 121.837 133.856 145.013 181.961 23.176-48.105 86.322-137.744 145.016-181.961 42.361-31.897 110.985-56.584 110.985 21.96 0 15.681-8.962 131.776-14.223 150.628-18.272 65.516-84.873 82.228-144.112 72.116 103.55 17.68 129.889 76.238 73 134.8-108.04 111.223-155.288-27.905-167.385-63.554-3.489-10.262-2.991-10.498-6.561 0-12.098 35.649-59.342 174.777-167.382 63.554-56.89-58.562-30.551-117.12 72.999-134.8-59.239 10.112-125.84-6.6-144.112-72.116C8.962 184.178 0 68.083 0 52.402c0-78.544 68.633-53.857 110.985-21.96z"
+              />
             </svg>
           </FooterLink>
         </div>

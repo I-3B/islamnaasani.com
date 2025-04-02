@@ -12,6 +12,7 @@ import { appBarVariants, hideOnScrollVariants } from "./appBarFramerVariants";
 export type AppBarOrigin = "top" | "bottom" | "left" | "right";
 
 export type AppBarProps = {};
+/**@deprecated */
 export const AppBar = ({}: AppBarProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [storedOrigin, setStoredOrigin] = useState<AppBarOrigin>("bottom");

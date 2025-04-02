@@ -1,6 +1,6 @@
 export const navigation = [
   {
-    name: "Home",
+    name: "Islam Naasani",
     href: "/",
     color: "rgb(0 182 133)",
     startWith: false,

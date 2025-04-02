@@ -24,32 +24,31 @@ export const EXPERIENCES: Experience[] = [
     noDuration: true,
     description: (
       <>
-        <p>{`Graduated with a 86% grade`}</p>
-        <p className="pt-1">
-          {
-            "I've got equipped with a wide range of knowledge covering: algorithms, data structure, and software engineering mythologies."
-          }
-        </p>
-        <p className="pt-1">
-          {
-            "as I took more software engineering courses I've done my 4th year project, "
-          }
-          <Link target="_blank" href="https://github.com/I-AM-22/uBay">
-            uBay
-          </Link>
-          {` which is a social media platform for selling and buying second-hand items.`}
-          And my graduation project,{" "}
-          <Link target="_blank" href="https://github.com/I-AM-22/naqla">
-            Naqla (نقلة)
-          </Link>
-          , a platform designed to simplify the process of moving house
-          furniture and goods. Inspired by the convenience of ride-sharing apps.
-        </p>
+        <p>{`Graduated with a 86% grade.`}</p>
+        <ul>
+          <li>
+            {
+              "As I took more software engineering courses I've done my 4th year project, "
+            }
+            <Link target="_blank" href="https://github.com/I-AM-22/uBay">
+              uBay
+            </Link>
+            {` which is a social media platform for selling and buying second-hand items.`}
+          </li>
+          <li>
+            And my graduation project,{" "}
+            <Link target="_blank" href="https://github.com/I-AM-22/naqla">
+              Naqla (نقلة)
+            </Link>
+            , a platform designed to simplify the process of moving house
+            furniture and goods.
+          </li>
+        </ul>
       </>
     ),
   },
   {
-    title: "Front-end Developer",
+    title: "React Developer",
     company: (
       <Link target="_blank" href="http://www.ulutech-sy.com/">
         Ulutech
@@ -61,16 +60,11 @@ export const EXPERIENCES: Experience[] = [
     description: (
       <>
         <p>
-          I have had the opportunity to work with a great team on a huge
-          project, which was a food delivery service called HumyApp. I worked in
-          the front-end team were we built the admin dashboard.
-        </p>
-        <p className="pt-1">
-          Our work was mainly crafting complex forms and CRUD operations to
-          manage all of the the platform applications (customer, driver,
-          pioneer) such as reviewing new drivers and posting customized
-          notifications. The dashboard also has a permission-based authorization
-          system.
+          I contributed to{" "}
+          <a href="https://play.google.com/store/apps/details?id=com.nbs.alphameal&hl=en&pli=1">
+            HumyApp
+          </a>
+          's dashboard development.{" "}
         </p>
       </>
     ),
@@ -84,13 +78,17 @@ export const EXPERIENCES: Experience[] = [
     description: (
       <>
         <p>
-          {`CLICK Online is a product startup, I worked in the development team on two products.
-           One is Safra Binakra which is a centralized platform for inland traveling in Syria,
-            I built the web version of the user application, which was a mobile-first PWA, and a dashboard for managing the platform.`}
-        </p>
-        <p className="pt-1">
-          {`The second product is a management system for a university in Syria, which is still under development, where I also built a web-version app
-           and a dashboard.`}
+          {`CLICK Online is a product startup, I worked in the development team on two products.`}
+          <ul>
+            <li>
+              One is <a href="https://safra-binakra.com/">Safra Binakra</a> {""}
+              which is a platform for inland traveling in Syria.
+            </li>
+            <li>
+              The second product is a management system for a university, which
+              was still under development.
+            </li>
+          </ul>
         </p>
       </>
     ),
@@ -105,6 +103,14 @@ export const EXPERIENCES: Experience[] = [
     location: "Kuala Lumpur, Malaysia (Remote)",
     from: "2024-2-1",
     to: null,
-    description: <p>{``}</p>,
+    description: (
+      <ul>
+        <li>
+          Led the development of multiple projects and actively contributed to
+          others through coding and code reviews.
+        </li>
+        <li>I'm the go-to person for CI/CD pipelines.</li>
+      </ul>
+    ),
   },
 ];

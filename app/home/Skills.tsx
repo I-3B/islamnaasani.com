@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FC, useState } from "react";
 
 export type SkillsProps = {};
+/**@deprecated */
 export const Skills: FC<SkillsProps> = ({}) => {
   const [selectedSkill, setSelectedSkill] = useState(SKILLS[0]);
   return (
