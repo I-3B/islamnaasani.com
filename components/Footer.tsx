@@ -69,7 +69,7 @@ export const Footer: FC<FooterProps> = ({}) => {
           </FooterLink>
           <FooterLink
             gradientProps={{ className: "from-blue-300 to-blue-400" }}
-            href={"https://bsky.app/profile/islamnaasani.bsky.social"}
+            href={"https://bsky.app/profile/islamnaasani.com"}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
