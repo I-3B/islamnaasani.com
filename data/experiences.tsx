@@ -77,8 +77,10 @@ export const EXPERIENCES: Experience[] = [
     to: "2023-12",
     description: (
       <>
-        <p>
-          {`CLICK Online is a product startup, I worked in the development team on two products.`}
+        <div>
+          <p>
+            {`CLICK Online is a product startup, I worked in the development team on two products.`}
+          </p>
           <ul>
             <li>
               One is <a href="https://safra-binakra.com/">Safra Binakra</a> {""}
@@ -89,7 +91,7 @@ export const EXPERIENCES: Experience[] = [
               was still under development.
             </li>
           </ul>
-        </p>
+        </div>
       </>
     ),
   },
