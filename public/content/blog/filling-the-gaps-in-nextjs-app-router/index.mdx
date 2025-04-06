@@ -1,15 +1,27 @@
 ---
 title: "Filling the Gaps in Next.js App Router: What the Docs Overlook in Scalable Apps"
-summary: This article examines practical strategies to address scalability challenges in Next.js App Router, including type-safety, code structure and form validation.
+summary: How to manage state in server components in a type-safe way? What are your options if you want an OpenAPI Spec for your route handlers API? How to handle errors in server actions? I'll try to answer those questions in this article.
 tags: Next.js,React
 publishedAt: 2025-01-20
+updatedAt: 2025-04-06
 ---
+
+## What does Next.js overlook?
+
+Building fullstack apps with Next.js is fun (except the painfully slow development time), but I think a lot of important questions are left unanswered:
+
+- How to manage state in server components in a type-safe way? (nuqs)
+- What are your options if you want an OpenAPI Spec for your route handlers API? (Hono)
+- How to handle errors in server actions?
+
+In this article, I'll try to answer those questions. This article is _not_ a Next.js tutorial, I'll be assuming you're familiar with Next.js App Router core features, including [Server Components](https://react.dev/reference/rsc/server-components), [Server Functions (Server Actions)](https://react.dev/reference/rsc/server-functions) and [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers).
+
+Also I'll be using code snippets from a starter project I wrote previously, the project is a simple To Do application that have a maintainable code structure coupled with good base libraries to use, You can refer to the source code on github [github.com/I-3B/next-todo](https://github.com/I-3B/next-todo) (where you can also follow the README to get started) and deployed on Vercel [next-todo-i-3b.vercel.app](https://next-todo-i-3b.vercel.app/).
 
 {/* START doctoc generated TOC please keep comment here to allow auto update */}
 {/* DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE */}
 **Table of Contents** {/* generated with [DocToc](https://github.com/thlorenz/doctoc) */}
 
-- [What does Next.js overlook?](#what-does-nextjs-overlook)
 - [Server Components and the state problem](#server-components-and-the-state-problem)
 - [Server Functions](#server-functions)
   - [Code organization](#code-organization)
@@ -18,14 +30,6 @@ publishedAt: 2025-01-20
 - [Conclusion](#conclusion)
 
 {/* END doctoc generated TOC please keep comment here to allow auto update */}
-
-## What does Next.js overlook?
-
-Building fullstack apps with Next.js is fun (except the painfully slow development time), but I find some parts of the core features a bit lacking in some domains, like type-safety, how to approach large forms, and working with non-trivial back-ends.
-
-In this article, I'll display some of the problems I faced when working with Next.js, and how I approached them. This article is _not_ a Next.js tutorial, I'll be assuming you're familiar with Next.js App Router core features, including [Server Components](https://react.dev/reference/rsc/server-components), [Server Functions (Server Actions)](https://react.dev/reference/rsc/server-functions) and [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers).
-
-Also I'll be using code snippets from a starter project I wrote previously, the project is a simple To Do application that have a maintainable code structure coupled with good base libraries to use, You can refer to the source code on github [github.com/I-3B/next-todo](https://github.com/I-3B/next-todo) (where you can also follow the README to get started) and deployed on Vercel [next-todo-i-3b.vercel.app](https://next-todo-i-3b.vercel.app/).
 
 ## Server Components and the state problem
 
@@ -258,7 +262,7 @@ if (response.error) {
 }
 ```
 
-> You also also abstract a function to handle this for you, you can check the implementation of [registration page](https://github.com/I-3B/next-todo/blob/main/app/auth/register/register-form.tsx#L52) for an example.
+> You can also abstract a function to handle this for you, you can check the implementation of [registration page](https://github.com/I-3B/next-todo/blob/main/app/auth/register/register-form.tsx#L52) for an example.
 
 ## Route Handlers and the non-existing type-safety
 
