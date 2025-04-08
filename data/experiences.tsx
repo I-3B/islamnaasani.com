@@ -25,25 +25,16 @@ export const EXPERIENCES: Experience[] = [
     description: (
       <>
         <p>{`Graduated with a 86% grade.`}</p>
-        <ul>
-          <li>
-            {
-              "As I took more software engineering courses I've done my 4th year project, "
-            }
-            <Link target="_blank" href="https://github.com/I-AM-22/uBay">
-              uBay
-            </Link>
-            {` which is a social media platform for selling and buying second-hand items.`}
-          </li>
-          <li>
-            And my graduation project,{" "}
-            <Link target="_blank" href="https://github.com/I-AM-22/naqla">
-              Naqla (نقلة)
-            </Link>
-            , a platform designed to simplify the process of moving house
-            furniture and goods.
-          </li>
-        </ul>
+        <p>
+          Did two projects:{" "}
+          <Link target="_blank" href="https://github.com/I-AM-22/uBay">
+            uBay
+          </Link>
+          {", "}
+          <Link target="_blank" href="https://github.com/I-AM-22/naqla">
+            Naqla (نقلة)
+          </Link>
+        </p>
       </>
     ),
   },
@@ -79,18 +70,9 @@ export const EXPERIENCES: Experience[] = [
       <>
         <div>
           <p>
-            {`CLICK Online is a product startup, I worked in the development team on two products.`}
+            {`I was the main front-end developer, where I built the admin dashboard and the web app of `}
+            <a href="https://safra-binakra.com/">Safra Binakra</a>.
           </p>
-          <ul>
-            <li>
-              One is <a href="https://safra-binakra.com/">Safra Binakra</a> {""}
-              which is a platform for inland traveling in Syria.
-            </li>
-            <li>
-              The second product is a management system for a university, which
-              was still under development.
-            </li>
-          </ul>
         </div>
       </>
     ),
@@ -106,13 +88,15 @@ export const EXPERIENCES: Experience[] = [
     from: "2024-2-1",
     to: null,
     description: (
-      <ul>
-        <li>
+      <div>
+        <p>
           Led the development of multiple projects and actively contributed to
-          others through coding and code reviews.
-        </li>
-        <li>I'm the go-to person for CI/CD pipelines.</li>
-      </ul>
+          others, most notably{" "}
+          <a href="https://hotelsentral.com.my/">Hotel Sentral</a> PMS,{" "}
+          <a href="https://www.ckpartners.com.my/">CKP</a> Portal and
+          HappieToken.
+        </p>
+      </div>
     ),
   },
 ];

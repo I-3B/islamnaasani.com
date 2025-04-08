@@ -1,4 +1,5 @@
 "use client";
+import { Card } from "@/components/ui/card";
 import { EXPERIENCES } from "@/data/experiences";
 import { cn } from "@/lib/utils";
 import {
@@ -18,7 +19,7 @@ import { FC } from "react";
 export type ExperiencesProps = {};
 export const Experiences: FC<ExperiencesProps> = ({}) => {
   return (
-    <section className="flex flex-col justify-center [&_a]:underline [&_ul]:list-disc [&_ul]:ps-4">
+    <Card className="m-3 flex max-w-2xl flex-col justify-center p-5 [&_a]:underline [&_ul]:list-disc [&_ul]:ps-4">
       <h2 className="mb-10 text-4xl">Career</h2>
       {[...EXPERIENCES].reverse().map((exp, i, arr) => (
         <article key={i} className="flex gap-4">
@@ -82,6 +83,6 @@ export const Experiences: FC<ExperiencesProps> = ({}) => {
           </div>
         </article>
       ))}
-    </section>
+    </Card>
   );
 };

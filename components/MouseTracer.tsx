@@ -6,16 +6,10 @@ export type MouseTracerProps = {};
 export const MouseTracer: FC<MouseTracerProps> = ({}) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isTrackingActive, setIsTrackingActive] = useState(false);
-  const [startPosition, setStartPosition] = useState<
-    "not-scrolled" | "scrolled" | null
-  >(null);
-  useEffect(() => {
-    setStartPosition(window.scrollY === 0 ? "not-scrolled" : "scrolled");
-  }, []);
+
   useEffect(() => {
     const listener = (e: MouseEvent | TouchEvent) => {
       if (!ref.current) return;
-      if (!isTrackingActive) return;
       const x1 = ref.current.getBoundingClientRect().left;
       const y1 = ref.current.getBoundingClientRect().top;
       let x2 = 0;
@@ -30,13 +24,18 @@ export const MouseTracer: FC<MouseTracerProps> = ({}) => {
       const SPEED = 0.005;
       const duration =
         Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / SPEED;
-      ref.current.animate(
-        {
-          left: `${x2}px`,
-          top: `${y2}px`,
-        },
-        { duration, fill: "forwards" },
-      );
+      if (isTrackingActive) {
+        ref.current.animate(
+          {
+            left: `${x2}px`,
+            top: `${y2}px`,
+          },
+          { duration, fill: "forwards" },
+        );
+      } else {
+        ref.current.style.left = `${x2}px`;
+        ref.current.style.top = `${y2}px`;
+      }
     };
     window.addEventListener("mouseover", listener);
     window.addEventListener("mousemove", listener);
@@ -48,15 +47,24 @@ export const MouseTracer: FC<MouseTracerProps> = ({}) => {
     };
   }, [isTrackingActive]);
   useEffect(() => {
-    setTimeout(() => setIsTrackingActive(true), 6000);
+    setTimeout(() => {
+      if (ref.current && !ref.current?.style.left) {
+        console.log(ref.current.clientWidth / 2);
+
+        ref.current.style.left = `${ref.current.clientWidth / 2}px`;
+        ref.current.style.top = `${ref.current.clientHeight / 2}px`;
+      }
+      setIsTrackingActive(true);
+    }, 2000);
   }, []);
+
   return (
     <div className="fixed inset-0 -z-10">
       <div
         ref={ref}
         className={cn(
-          "absolute rounded-full bg-gradient-to-r from-red-600 to-purple-700 brightness-50",
-          classes.animate,
+          "absolute h-[300px] w-[300px] rounded-full bg-gradient-to-r from-red-600 to-purple-700 opacity-0 brightness-50",
+          isTrackingActive && classes.animate,
         )}
       />
       <div className="absolute inset-0 z-10 backdrop-blur-[125px]"></div>
