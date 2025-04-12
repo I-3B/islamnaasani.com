@@ -1,0 +1,101 @@
+---
+title: Git Conventional Commits Made Easy with AI
+summary: Stick to following Conventional Commits by leveraging AI. This guide shows how to setup in VS Code and how to share the configuration across the team.
+tags: Git, AI, Tutorial
+publishedAt: 2025-04-12
+---
+
+Stick to following Conventional Commits by leveraging AI. This guide shows how to setup for VS Code and how to share the configuration across the team.
+
+## The Problem
+
+You probably used AI commit generation feature in Copilot or Cursor or any other AI assistant:
+
+<Image
+  src="image.png"
+  alt="AI commit in Cursor"
+  linkClassName="max-w-md mx-auto aspect-[8]"
+/>
+
+and it works fine, in fact, it makes it a lot easier to keep your commits descriptive and not just go with `fix typo`,
+particularly if you like to follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/),
+if you're not familiar with them, a conventional commit is something like:
+
+```txt
+fix(posts): prevent racing of requests
+
+- Introduce a request id and a reference to latest request. Dismiss
+incoming responses other than from latest request.
+- Remove timeouts which were used to mitigate the racing issue but are
+obsolete now.
+```
+
+And as you would expect, it's hard to stick to this format, especially when working in a team.
+But now with all those AI assistants, following conventional commits shouldn't be as cumbersome.
+
+## Solution
+
+There are two main requirements:
+
+- The ability to provide custom prompt to tailor the commit message.
+- Should be possible to easily use this tool across the team.
+
+I've been using [AI Commit](https://marketplace.visualstudio.com/items?itemName=Sitoi.ai-commit) VS Code extension for a while now and it does the job for me,
+You need to provide it an API key (OpenAI, Gemini) and a prompt to be used to generate the message.
+
+For the API key,
+at the time of writing, Gemini 2.5 pro is great, you can generate an API key for free here [Google AI Studio](https://aistudio.google.com/app/apikey),
+
+For the prompt, I've been using this:
+
+```txt
+type(scope): A helpful concise summary of changes (imperative mood, lowercase, no period at end)
+- Thorough explanation of point one
+- Thorough explanation of point two
+- (up to two more points if needed)
+
+Rules:
+- 'type' must be one of: feat, fix, refactor.
+- 'scope' indicates the feature/area affected (e.g., user, cart, api). Separate multiple scopes with a comma (e.g., user,auth).
+- The summary should be concise and describe the change as an instruction (e.g., 'add login button', not 'added login button').
+- The body should contain 1 to 4 bullet points explaining the 'what' and 'why'.
+- respond with plain text only, no code blocks
+- Ensure the total commit message length does not exceed 500 characters.
+- Separate the subject line from the body with a single blank line.
+```
+
+To easily share this setup with the team, assuming all your team members use VS Code,
+or any VS Code fork, you can add the following to your workspace's `.vscode/extensions.json` file:
+
+```json
+{
+  "recommendations": ["sitoi.ai-commit"]
+}
+```
+
+and configure the extension's prompt and model in `.vscode/settings.json`:
+
+```json
+{
+  "ai-commit.AI_PROVIDER": "gemini",
+  "ai-commit.GEMINI_MODEL": "gemini-2.5-pro-exp-03-25",
+  "ai-commit.AI_COMMIT_SYSTEM_PROMPT": "type(scope): A helpful concise summary of changes (imperative mood, lowercase, no period at end)\n\n- Thorough explanation of point one\n- Thorough explanation of point two\n- (up to two more points if needed)\n\nRules:\n- 'type' must be one of: feat, fix, refactor.\n- 'scope' indicates the feature/area affected (e.g., user, cart, api). Separate multiple scopes with a comma (e.g., user,auth).\n- The summary should be concise and describe the change as an instruction (e.g., 'add login button', not 'added login button').\n- The body should contain 1 to 4 bullet points explaining the 'what' and 'why'.\n- respond with plain text only, no code blocks\n- Ensure the total commit message length does not exceed 500 characters.\n- Separate the subject line from the body with a single blank line."
+}
+```
+
+Now, when a team member opens the workspace in VS Code, they will be prompted to install the recommended extension.
+
+They will still need to add their personal API key. The user `settings.json` file is appropriate for that:
+
+```json
+{
+  // your other user settings,
+  "ai-commit.GEMINI_API_KEY": "**********"
+}
+```
+
+And that's about it, this way all team members can commit with conventional messages consistently,
+if you use a different editor you should be able to find a similar plugin/extension for this as the functionality is quite simple.
+
+Sometimes though the generated commit message is not really accurate and doesn't highlight what's the commit about due to lack of context,
+but I still think the generated message is a good start anyway.
