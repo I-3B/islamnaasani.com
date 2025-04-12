@@ -21,8 +21,8 @@ export default function App({ children }: { children: ReactNode }) {
         {process.env.NODE_ENV === "production" && (
           <script
             defer
-            src="https://cloud.umami.is/script.js"
-            data-website-id="9ca8de7a-c67a-4435-aa07-39284f33a640"
+            src="/umami/script.js"
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
           ></script>
         )}
         <Analytics />

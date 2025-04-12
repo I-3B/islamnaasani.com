@@ -4,6 +4,7 @@ declare global {
     interface ProcessEnv {
       NEXT_PUBLIC_CONVERTKIT_API_KEY: string;
       NEXT_PUBLIC_CONVERTKIT_FORM_ID: string;
+      NEXT_PUBLIC_UMAMI_ID: string;
     }
   }
 }
