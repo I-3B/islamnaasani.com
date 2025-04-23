@@ -2,7 +2,7 @@
 import {
   MDXRemote as MDXRemotePrimitive,
   MDXRemoteProps as MDXRemotePrimitiveProps,
-} from "next-mdx-remote";
+} from "next-mdx-remote/rsc";
 import { FC } from "react";
 export type MDXRemoteProps = MDXRemotePrimitiveProps;
 export const MDXRemote: FC<MDXRemoteProps> = ({ ...props }) => {

@@ -5,6 +5,6 @@ export const blogMatterSchema = z.object({
   tags: z.string().transform((tags) => tags.split(",")),
   summary: z.string(),
   draft: z.boolean().optional(),
-  publishedAt: z.date(),
-  updatedAt: z.date().optional(),
+  publishedAt: z.coerce.date(),
+  updatedAt: z.coerce.date().optional(),
 });

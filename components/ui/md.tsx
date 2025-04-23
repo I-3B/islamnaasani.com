@@ -1,9 +1,11 @@
+"use client"
 import { cn } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
 import NextImage, { ImageProps } from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ComponentPropsWithoutRef,
+  JSX,
   NamedExoticComponent,
   forwardRef,
   memo,

@@ -10,9 +10,9 @@ import Image from "next/image";
 import path from "path";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
-export function generateStaticParams(): Props["params"][] {
+export function generateStaticParams(): { slug: string }[] {
   const filesNames = readdirSync(getPublicPath("content/projects"), "utf8");
   const slugs = filesNames.map((fileName) => ({
     slug: path.parse(fileName).name,
@@ -21,7 +21,7 @@ export function generateStaticParams(): Props["params"][] {
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const file = lookupPublicFile(
-    getPublicPath(`content/projects/${params.slug}`),
+    getPublicPath(`content/projects/${(await params).slug}`),
     "mdx",
   );
   if (!file) {
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 export default async function Page({ params }: Props) {
   const file = lookupPublicFile(
-    getPublicPath(`content/projects/${params.slug}`),
+    getPublicPath(`content/projects/${(await params).slug}`),
     "mdx",
   );
 
@@ -84,7 +84,7 @@ export default async function Page({ params }: Props) {
           alt="project's home page"
         />
         <div className="prose prose-quoteless mt-4 max-w-full dark:prose-invert md:prose-lg prose-h2:text-3xl prose-p:my-2 prose-p:text-foreground prose-a:visited:text-purple-200 prose-blockquote:my-1 prose-ul:ml-0 prose-img:rounded-sm sm:prose-h2:text-4xl">
-          <MDXRemote {...project} />
+          <MDXRemote source={project} />
         </div>
       </article>
     </PageViewIncrementor>

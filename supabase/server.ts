@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export const createServerSupabase = () => {
-  const cookieStore = cookies();
+export  const createServerSupabase = async() => {
+  const cookieStore =await  cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
@@ -17,7 +17,7 @@ export const createServerSupabase = () => {
 };
 // TODO add types from database
 export async function getPageHits(path: string) {
-  const supabase = createServerSupabase();
+  const supabase =await  createServerSupabase();
   return (
     (await supabase.from("page_hits").select().eq("path", path)).data?.[0]
       ?.hits ?? (0 as number)

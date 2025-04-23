@@ -23,12 +23,12 @@ import "../../md-code.css";
 
 dayjs.extend(advancedFormat);
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const frontmatter = (
     await readMdFile(
-      lookupPublicFile(getPublicPath(`content/blog/${params.slug}`), "mdx") ??
+      lookupPublicFile(getPublicPath(`content/blog/${(await params).slug}`), "mdx") ??
         "",
     ).catch((e) => console.error(e))
   )?.frontmatter;
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: frontmatter ? (frontmatter.summary as string) : "",
   };
 }
-export function generateStaticParams(): Props["params"][] {
+export function generateStaticParams(): { slug: string }[] {
   const filesNames = readdirSync(getPublicPath("content/blog"), "utf8");
   const slugs = filesNames.map((fileName) => ({
     slug: path.parse(fileName).name,
@@ -47,7 +47,7 @@ export function generateStaticParams(): Props["params"][] {
 
 export default async function Page({ params }: Props) {
   const file = lookupPublicFile(
-    getPublicPath(`content/blog/${params.slug}`),
+    getPublicPath(`content/blog/${(await params).slug}`),
     "mdx",
   );
   if (!file)
@@ -126,7 +126,7 @@ export default async function Page({ params }: Props) {
             )}
             {(!matter.draft || IS_DEVELOPMENT) && (
               <div className="prose prose-quoteless mt-4 max-w-full text-foreground dark:prose-invert md:prose-lg prose-headings:mb-2 prose-headings:mt-7 prose-h2:mt-12 prose-h2:text-3xl prose-p:my-2 prose-p:text-foreground prose-a:visited:text-purple-200 prose-blockquote:my-1 prose-blockquote:not-italic prose-ul:ml-0 prose-li:text-foreground prose-img:rounded-sm prose-hr:my-6 prose-hr:border-t-2 prose-hr:border-border  sm:prose-h2:text-4xl">
-                <MDXRemote {...post} />
+                <MDXRemote source={post} />
               </div>
             )}
             <Divider />
