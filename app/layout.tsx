@@ -1,5 +1,4 @@
 import { TopBar } from "@/src/components/TopBar";
-import { Analytics } from "@vercel/analytics/react";
 import { ReactNode } from "react";
 import { Footer } from "../components/Footer";
 import "./globals.css";
@@ -20,7 +19,6 @@ export default function App({ children }: { children: ReactNode }) {
             data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
           ></script>
         )}
-        <Analytics />
       </body>
     </html>
   );
