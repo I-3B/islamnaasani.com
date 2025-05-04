@@ -1,43 +1,46 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
 import NextImage, { ImageProps } from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ComponentPropsWithoutRef,
-  NamedExoticComponent,
   forwardRef,
   memo,
   useEffect,
   useRef,
   useState,
+  type JSX,
 } from "react";
 import { Button } from "./button";
 import { Divider } from "./divider";
 import { Link } from "./link";
-const P = (p: React.JSX.IntrinsicElements["p"]) => <p {...p} />;
+export const P = (p: React.JSX.IntrinsicElements["p"]) => <p {...p} />;
 
-const Strong = (strong: React.JSX.IntrinsicElements["strong"]) => (
+export const Strong = (strong: React.JSX.IntrinsicElements["strong"]) => (
   <strong className="font-bold" {...strong} />
 );
 
-const OL = (p: React.JSX.IntrinsicElements["ol"]) => (
+export const OL = (p: React.JSX.IntrinsicElements["ol"]) => (
   <ol className="list-decimal" {...p} />
 );
-const LI = (p: React.JSX.IntrinsicElements["li"]) => (
+export const LI = (p: React.JSX.IntrinsicElements["li"]) => (
   <li className="leading-relaxed" {...p} />
 );
-const UL = (p: React.JSX.IntrinsicElements["ul"]) => (
+export const UL = (p: React.JSX.IntrinsicElements["ul"]) => (
   <ul className="list-disc" {...p} />
 );
-const HR = (hr: React.JSX.IntrinsicElements["hr"]) => <Divider {...hr} />;
-const A = (a: React.JSX.IntrinsicElements["a"]) => (
+export const HR = (hr: React.JSX.IntrinsicElements["hr"]) => (
+  <Divider {...hr} />
+);
+export const A = (a: React.JSX.IntrinsicElements["a"]) => (
   <a
     target={a.href?.startsWith("#") ? "_self" : "_blank"}
     {...a}
     className={cn("visited:text-purple-300", a.className)}
   />
 );
-const Blockquote = ({
+export const Blockquote = ({
   children,
   ...props
 }: JSX.IntrinsicElements["blockquote"]) => {
@@ -59,7 +62,7 @@ export type HeadingProps = {
   as?: any;
 };
 
-const Heading = forwardRef(function Heading(
+export const Heading = forwardRef(function Heading(
   {
     as: Comp = "div",
     className,
@@ -104,7 +107,7 @@ const Heading = forwardRef(function Heading(
   );
 });
 
-const H1 = ({ className, ...props }: ComponentPropsWithoutRef<"h1">) => (
+export const H1 = ({ className, ...props }: ComponentPropsWithoutRef<"h1">) => (
   <Heading
     as={"h1"}
     className={cn(className, "font-display text-5xl font-bold leading-tight")}
@@ -112,7 +115,7 @@ const H1 = ({ className, ...props }: ComponentPropsWithoutRef<"h1">) => (
   />
 );
 
-const H2 = ({ className, ...props }: ComponentPropsWithoutRef<"h2">) => (
+export const H2 = ({ className, ...props }: ComponentPropsWithoutRef<"h2">) => (
   <Heading
     as={"h2"}
     className={cn(
@@ -123,7 +126,7 @@ const H2 = ({ className, ...props }: ComponentPropsWithoutRef<"h2">) => (
   />
 );
 
-const H3 = ({ className, ...props }: ComponentPropsWithoutRef<"h3">) => (
+export const H3 = ({ className, ...props }: ComponentPropsWithoutRef<"h3">) => (
   <Heading
     as={"h3"}
     className={cn(
@@ -134,7 +137,7 @@ const H3 = ({ className, ...props }: ComponentPropsWithoutRef<"h3">) => (
   />
 );
 
-const H4 = ({ className, ...props }: ComponentPropsWithoutRef<"h4">) => (
+export const H4 = ({ className, ...props }: ComponentPropsWithoutRef<"h4">) => (
   <Heading
     as={"h4"}
     className={cn(className, "font-display my-4 text-xl font-bold leading-9")}
@@ -142,7 +145,7 @@ const H4 = ({ className, ...props }: ComponentPropsWithoutRef<"h4">) => (
   />
 );
 
-const Code = memo(function FC({
+export const Code = memo(function FC({
   className,
   ...props
 }: ComponentPropsWithoutRef<"code">) {
@@ -151,7 +154,7 @@ const Code = memo(function FC({
   );
 });
 
-const CodeBlock = ({
+export const CodeBlock = ({
   className,
   ...props
 }: ComponentPropsWithoutRef<"pre">) => {
@@ -197,7 +200,7 @@ const CodeBlock = ({
   );
 };
 const imageBlacklist = ["https://codesandbox.io"];
-const Image = memo(function FC({
+export const Image = memo(function FC({
   className,
   linkClassName,
   ...props
@@ -227,7 +230,7 @@ const Image = memo(function FC({
     </Link>
   );
 });
-const Source = memo(function FC({
+export const Source = memo(function FC({
   className,
   ...props
 }: ComponentPropsWithoutRef<"source">) {
@@ -246,24 +249,3 @@ function useContentSrc(src: string) {
   const isContentColocated = isContentPath && isColocatedSrc;
   return isContentColocated ? `/content${pathname}/${src}` : src;
 }
-const MDXComponents = {
-  img: Image as NamedExoticComponent<ComponentPropsWithoutRef<"img">>,
-  Image,
-  Source,
-  p: P,
-  strong: Strong,
-  blockquote: Blockquote,
-  ol: OL,
-  ul: UL,
-  li: LI,
-  h1: H1,
-  h2: H2,
-  h3: H3,
-  h4: H4,
-  a: A,
-  hr: HR,
-  code: Code,
-  Code: Code,
-  pre: CodeBlock,
-};
-export default MDXComponents;

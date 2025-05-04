@@ -14,11 +14,6 @@ import { Metadata } from "next";
 import { serialize } from "next-mdx-remote/serialize";
 import Script from "next/script";
 import path from "path";
-import rehypeCodeTitles from "rehype-code-titles";
-import rehypePrism from "rehype-prism-plus";
-import rehypeSlug from "rehype-slug";
-//@ts-expect-error
-import codesandbox from "remark-codesandbox";
 import "../../md-code.css";
 
 dayjs.extend(advancedFormat);
@@ -57,13 +52,9 @@ export default async function Page({ params }: Props) {
       </p>
     );
 
-  const fileContents = readFileSync(file, "utf8");
-  const post = await serialize(fileContents, {
+  const source = readFileSync(file, "utf8");
+  const post = await serialize(source, {
     parseFrontmatter: true,
-    mdxOptions: {
-      rehypePlugins: [rehypeCodeTitles, rehypePrism, rehypeSlug],
-      remarkPlugins: [[codesandbox, { mode: "button" }]],
-    },
   });
 
   const matter = blogMatterSchema.parse(post.frontmatter);
@@ -126,7 +117,7 @@ export default async function Page({ params }: Props) {
             )}
             {(!matter.draft || IS_DEVELOPMENT) && (
               <div className="prose prose-quoteless mt-4 max-w-full text-foreground dark:prose-invert md:prose-lg prose-headings:mb-2 prose-headings:mt-7 prose-h2:mt-12 prose-h2:text-3xl prose-p:my-2 prose-p:text-foreground prose-a:visited:text-purple-200 prose-blockquote:my-1 prose-blockquote:not-italic prose-ul:ml-0 prose-li:text-foreground prose-img:rounded-sm prose-hr:my-6 prose-hr:border-t-2 prose-hr:border-border  sm:prose-h2:text-4xl">
-                <MDXRemote {...post} />
+                <MDXRemote source={source} />
               </div>
             )}
             <Divider />

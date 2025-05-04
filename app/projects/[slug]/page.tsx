@@ -4,7 +4,7 @@ import { MDXRemote } from "@/lib/MDXRemote";
 import { readMdFile } from "@/utils/md";
 import { getPublicPath, lookupPublicFile } from "@/utils/utils";
 import { projectMatterSchema } from "@/validation/project";
-import { readdirSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { Metadata } from "next";
 import Image from "next/image";
 import path from "path";
@@ -12,7 +12,7 @@ import path from "path";
 type Props = {
   params: { slug: string };
 };
-export function generateStaticParams(): Props["params"][] {
+export function generateStaticParams(): { slug: string }[] {
   const filesNames = readdirSync(getPublicPath("content/projects"), "utf8");
   const slugs = filesNames.map((fileName) => ({
     slug: path.parse(fileName).name,
@@ -43,6 +43,7 @@ export default async function Page({ params }: Props) {
       <p className="mt-20 w-full text-center text-4xl">Project not Found</p>
     );
 
+  const source = readFileSync(file, "utf8");
   const project = await readMdFile(file);
 
   const matter = projectMatterSchema.parse(project.frontmatter);
@@ -84,7 +85,7 @@ export default async function Page({ params }: Props) {
           alt="project's home page"
         />
         <div className="prose prose-quoteless mt-4 max-w-full dark:prose-invert md:prose-lg prose-h2:text-3xl prose-p:my-2 prose-p:text-foreground prose-a:visited:text-purple-200 prose-blockquote:my-1 prose-ul:ml-0 prose-img:rounded-sm sm:prose-h2:text-4xl">
-          <MDXRemote {...project} />
+          <MDXRemote source={source} />
         </div>
       </article>
     </PageViewIncrementor>
