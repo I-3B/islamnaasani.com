@@ -32,6 +32,12 @@ export const Footer: FC<FooterProps> = ({}) => {
       <div className="order-1 md:order-none">
         <div className="xs:gap-2 flex flex-row flex-wrap items-start justify-center text-xl lg:mt-0">
           <FooterLink
+            href={"mailto:contact@islamnaasani.com"}
+            gradientProps={{ className: "from-red-700 to-orange-500" }}
+          >
+            <Mail aria-label="Email" />
+          </FooterLink>
+          <FooterLink
             href={"https://github.com/I-3B"}
             gradientProps={{ className: "from-purple-800 to-purple-600" }}
           >
@@ -42,12 +48,6 @@ export const Footer: FC<FooterProps> = ({}) => {
             href={"https://www.linkedin.com/in/islam-nassani"}
           >
             <Linkedin aria-label="LinkedIn" />
-          </FooterLink>
-          <FooterLink
-            href={"mailto:islamnaasani@gmail.com"}
-            gradientProps={{ className: "from-red-700 to-orange-500" }}
-          >
-            <Mail aria-label="Email" />
           </FooterLink>
           <FooterLink
             gradientProps={{ className: "from-blue-300 to-blue-400" }}
