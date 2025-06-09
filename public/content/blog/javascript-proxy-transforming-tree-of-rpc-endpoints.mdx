@@ -1,0 +1,409 @@
+---
+title: "JavaScript Proxy: Transforming A Tree of RPC Endpoints"
+summary: In this article, I'm going to show a use case of JavaScript Proxy where I used it to transform the results of a huge object nested methods. After reading this, you should have a better understanding of Proxy and you can keep Proxy in mind for the next time you face a problem that it can solves.
+
+tags: Tutorial, JavaScript, TypeScript
+publishedAt: 2025-06-10
+---
+
+To start off, I didn't understand how JavaScript Proxy worked, and because of that, I've never made use of it before, till now.
+
+In this article, I'm going to show a use case of JavaScript Proxy where I used it to transform the results of a huge object nested methods.
+
+After reading this, you should have a better understanding of Proxy and you can keep Proxy in mind for the next time you face a problem that it can solves.
+{/* START doctoc generated TOC please keep comment here to allow auto update */}
+{/* DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE */}
+**Table of Contents** {/* generated with [DocToc](https://github.com/thlorenz/doctoc) */}
+
+- [Use Case](#use-case)
+  - [What is JavaScript Proxy](#what-is-javascript-proxy)
+  - [Putting it to use](#putting-it-to-use)
+  - [Getting the Type Right](#getting-the-type-right)
+- [Conclusion](#conclusion)
+
+{/* END doctoc generated TOC please keep comment here to allow auto update */}
+
+## Use Case
+
+So I've been using [Hono RPC](https://hono.dev/docs/guides/rpc)
+
+```ts
+const client = hc<AppType>('http://localhost:3000/')
+
+const res = await client.posts.$post({
+  form: {
+    title: 'Hello',
+    body: 'Hono is a cool project',
+  },
+})
+
+if (res.ok) {
+  const data = await res.json()
+  console.log(data.message)
+}
+```
+
+which is pretty great and type-safe, only that it's a bit annoying to use with tools like tanstack query,
+because they expects requests to throw an error on request failure, and for the response to ready to be read on success (shouldn't need `res.json()`).
+
+So I looked for a way to intercept the response and do the following:
+
+```ts
+const response = await queryFn(...params);
+if (!response.ok) {
+  throw await response.json(); // the error is always an object.
+}
+return response.json();
+```
+
+I couldn't find how to do this in [the RPC docs](https://hono.dev/docs/guides/rpc), so I wrote a small (type-safe) wrapper function to do this:
+
+```ts
+export function unwrapClientResponse<
+  TResponse,
+  TStatusCode extends number,
+  TFormat extends string,
+  TParams extends any[],
+>(
+  queryFn: (...params: TParams) => Promise<ClientResponse<TResponse, TStatusCode, TFormat>>
+): (...params: TParams) => Promise<TResponse> {
+  return (async (...params: TParams) => {
+    const response = await queryFn(...params);
+    if (!response.ok) {
+      throw await response.json();
+    }
+    return response.json();
+  }) as any;
+}
+```
+
+and it can be used like this:
+
+```ts
+const post = unwrapClientResponse(client.posts.$post)
+const data = await post({
+  form: {
+    title: 'Hello',
+    body: 'Hono is a cool project',
+  },
+})
+```
+
+as you can see, this is a hassle to do for every API call...
+it would be great if we can somehow do this recursively for the whole RPC client object,
+while also maintaining the functionality and type-safety of the original RPC client.
+
+Doing it manually (recursively calling`Object.entries`) felt like it would be a lot of work and might not even work, so I didn't go down that path,
+but I did find that [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy),
+while not commonly used for manipulating the response, will do the job.
+
+### What is JavaScript Proxy
+
+Proxy in short is:
+
+> The Proxy object allows you to create an object that can be used in place of the original object, but which may redefine fundamental Object operations like getting, setting, and defining properties.
+
+Which is exactly what we want, specifically the [`get`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy/get) trap,
+`get` is what allow us to intercept when user try to get a property from the object:
+
+```js
+const target = {
+  message1: "hello",
+  message2: "everyone",
+};
+
+const handler = {
+  get(target, prop, receiver) {
+    if (prop === "message2") {
+      return "world";
+    }
+    return Reflect.get(target, prop, receiver);
+  },
+};
+
+const proxy = new Proxy(target, handler);
+
+console.log(proxy.message1); // "hello"
+console.log(proxy.message2); // "world"
+```
+
+> [Reflect.get()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect) provides the reflective semantic of a property access. That is,
+> `Reflect.get(target, prop, receiver)` is semantically equivalent to: `target[prop];`
+
+### Putting it to use
+
+Back to our use case, we want to iterate over the RPC client object, and when we find a function, wrap it with our `unwrapClientResponse` function,
+if it's an object, look into its properties too.
+
+```js
+function rpcProxy(obj) {
+  return new Proxy(obj, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver);
+      if (typeof value === "function") {
+        return unwrapClientResponse(value);
+      }
+      if (typeof value === "object" && value !== null) {
+        return rpcProxy(value);
+      }
+      return value;
+    },
+  });
+}
+const proxiedRpcClient = rpcProxy(client);
+```
+
+We use `Reflect.get` as we don't want to manipulate the property itself, we only want to change its response shape.
+
+But this doesn't work, the assumption that every function is an API endpoint is wrong, so we can't use `typeof value` to determine if it's an API endpoint.
+Luckily, Hono uses a convention where if the property start with `$` it's an API endpoint (except for `$url` method), so we can make use of that info:
+
+```js
+function rpcProxy(obj) {
+  return new Proxy(obj, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver);
+      if (prop.toString().startsWith("$")) {
+        return unwrapClientResponse(value);
+      }
+      if (!prop.toString().startsWith("$") && value !== null) {
+        return rpcProxy(value);
+      }
+      return value;
+    },
+  });
+}
+```
+
+Let's put this to test:
+
+we need a simple endpoint:
+
+```ts backend.ts
+const route = app
+  .basePath("/api")
+  .get("/", (c) => {
+    return c.json({ message: "Hello!" });
+  })
+export type AppType = typeof route;
+```
+
+```ts rpc.ts {23-37}
+import { AppType } from "./backend";
+import { hc } from "hono/client";
+
+import { ClientResponse } from "hono/client";
+
+export function unwrapClientResponse<
+  TResponse,
+  TStatusCode extends number,
+  TFormat extends string,
+  TParams extends any[],
+>(
+  queryFn: (...params: TParams) => Promise<ClientResponse<TResponse, TStatusCode, TFormat>>
+): (...params: TParams) => Promise<TResponse> {
+  return (async (...params: TParams) => {
+    const response = await queryFn(...params);
+    if (!response.ok) {
+      throw await response.json();
+    }
+    return response.json();
+  }) as any;
+}
+
+function rpcProxy<T extends object>(obj: T) {
+  return new Proxy(obj, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver);
+      if (prop.toString().startsWith("$")) {
+        return unwrapClientResponse(value as any);
+      }
+      if (!prop.toString().startsWith("$") && value !== null) {
+        return rpcProxy(value as object);
+      }
+
+      return value;
+    },
+  });
+}
+
+export const rpc = rpcProxy(
+  hc<AppType>("http://localhost:3000/").api
+);
+
+const hello = await rpc.$get();
+console.log(hello); // { message: 'Hello!' }
+```
+
+Great! only one thing remains, getting the type right, while the response now is correct, the type is still the same from the original RPC client object.
+
+```ts
+const hello = await rpc.$get();
+//      ^?
+ClientResponse<{
+  message: string;
+}, ContentfulStatusCode, "json">
+```
+
+If we try to access the response we will get a type error:
+
+```ts
+console.log(hello.message);
+```
+
+```log
+Property 'message' does not exist on type
+'ClientResponse<{ message: string; }, ContentfulStatusCode, "json">'.ts(2339)
+```
+
+### Getting the Type Right
+
+This error makes sense, if we go back to [Proxy docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy):
+
+> Proxy objects are commonly used to log property accesses, validate, format, or sanitize inputs, and so on.
+
+so while it works, you're not supposed to change the response shape, we can see this clearly in the type definition for `Proxy` (click on "Go To Type Definition" in the context menu):
+
+```ts {16}
+interface ProxyConstructor {
+    /**
+     * Creates a revocable Proxy object.
+     * @param target A target object to wrap with Proxy.
+     * @param handler An object whose properties define the behavior of Proxy when an operation is attempted on it.
+     */
+    revocable<T extends object>(target: T, handler: ProxyHandler<T>): { proxy: T; revoke: () => void; };
+
+    /**
+     * Creates a Proxy object. The Proxy object allows you to create an object that can be used in place of the
+     * original object, but which may redefine fundamental Object operations like getting, setting, and defining
+     * properties. Proxy objects are commonly used to log property accesses, validate, format, or sanitize inputs.
+     * @param target A target object to wrap with Proxy.
+     * @param handler An object whose properties define the behavior of Proxy when an operation is attempted on it.
+     */
+    new <T extends object>(target: T, handler: ProxyHandler<T>): T;
+}
+```
+
+the returned object should be the same as the passed (target) object, `T`, but that's not what we want here.
+
+So we somehow need a way to manually type the return value of `rpcProxy`,
+which is the whole RPC client object with all API functions updated to return the unwrapped response.
+
+To achieve this, two utility types are needed:
+
+1. One that can extracts the response data. (the equivalent of `unwrapClientResponse`)
+2. The other type is to recursively apply `ExtractFromClientResponse` type on the whole RPC client object (the equivalent of `rpcProxy`).
+
+#### Extracting the response data type:
+
+```ts
+type ExtractFromClientResponse<T> = T extends (
+  ...args: infer A
+) => Promise<ClientResponse<infer U, any, any>>
+  ? (...args: A) => Promise<U>
+  : T;
+```
+
+This will extract the data type (U) if the function's return type satisfies `Promise<ClientResponse<infer U, any, any>>`, otherwise it will just return the type as is:
+
+```ts
+export const rpc = rpcProxy(
+  hc<AppType>("http://localhost:3000/").api
+);
+const hello = await rpc.$get();
+//     ^?
+ClientResponse<{
+    message: string;
+}, ContentfulStatusCode, "json">
+
+type HelloFn = ExtractFromClientResponse<typeof rpc.$get>;
+type HelloResponse = ReturnType<HelloFn>
+//    ^?
+Promise<{
+    message: string;
+}>
+
+type ShouldBeNumber =  ExtractFromClientResponse<number>
+//    ^?
+number
+```
+
+#### Applying the extracted response for all functions on the RPC object:
+
+```ts
+type ProxyResponse<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any
+    ? ExtractFromClientResponse<T[K]>
+    : T[K] extends object
+      ? ProxyResponse<T[K]>
+      : T[K];
+};
+```
+
+If it's a function pass it to `ExtractFromClientResponse`, else if it's an object call it recursively, else just return it as is.
+
+```ts
+export const rpc = rpcProxy(
+  hc<AppType>("http://localhost:3000/").api
+);
+
+type RPC = ProxyResponse<typeof rpc>
+type HelloFn = RPC['$get']
+type HelloResponse = ReturnType<HelloFn>
+//     ^?
+Promise<{
+    message: string;
+}>
+```
+
+Now that we have our Proxy type ready, we can use [Declaration Merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) to override the Proxy interface:
+
+```diff
+interface ProxyConstructor {
+-  new <T extends object>(target: T, handler: ProxyHandler<T>): T;
++  new <T extends object>(target: T, handler: ProxyHandler<T>): ProxyResponse<T>;
+}
+```
+
+Now let's try again:
+
+```ts
+declare var Proxy: ProxyConstructor;
+interface ProxyConstructor {
+  new <T extends object>(target: T, handler: ProxyHandler<T>): ProxyResponse<T>;
+}
+function rpcProxy<T extends object>(obj: T) {
+  return new Proxy(obj, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver);
+      if (prop.toString().startsWith("$")) {
+        return unwrapClientResponse(value as any);
+      }
+      if (!prop.toString().startsWith("$") && value !== null) {
+        return rpcProxy(value as object);
+      }
+
+      return value;
+    },
+  });
+}
+
+export const rpc = rpcProxy(
+  hc<AppType>("http://localhost:3000/").api
+);
+
+const hello = await rpc.$get()
+//     ^?
+{
+    message: string;
+}
+```
+
+Cool!
+
+## Conclusion
+
+So while this use case might be too convoluted,
+and it's possible that there's more simple ways to achieve this (in Tanstack Query case, maybe using `select` option in [QueryClient](https://tanstack.com/query/v5/docs/reference/QueryClient) would have helped)
+
+Still, I found this to be a great use case of Proxy to see how powerful it's and how it can help in an unexpected ways.
