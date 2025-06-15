@@ -27,7 +27,7 @@ export const Projects: FC<ProjectsProps> = async ({}) => {
       ...projectMatterSchema.parse(md.frontmatter),
       slug: files[i].split(".")[0],
     }))
-    .filter((project) => project.featured !== undefined)
+    .filter((project) => project.featured)
     .sort((a, b) => a.rank - b.rank);
   return (
     <div className="flex flex-col gap-3">
