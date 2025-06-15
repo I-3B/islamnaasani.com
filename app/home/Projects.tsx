@@ -3,10 +3,9 @@ import { readdirSync } from "fs";
 import Link from "next/link";
 import { FC } from "react";
 
-import { Card } from "@/components/ui/card";
 import { getPublicPath, lookupPublicFile } from "@/utils/utils";
 import { projectMatterSchema } from "@/validation/project";
-import { ArrowUpRight } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 export type ProjectsProps = {};
 export const Projects: FC<ProjectsProps> = async ({}) => {
@@ -19,6 +18,7 @@ export const Projects: FC<ProjectsProps> = async ({}) => {
             getPublicPath(`content/projects/${file.split(".")[0]}`),
             "mdx",
           ) ?? "",
+          { frontmatterOnly: true },
         ),
       ),
     )
@@ -30,27 +30,32 @@ export const Projects: FC<ProjectsProps> = async ({}) => {
     .filter((project) => project.featured !== undefined)
     .sort((a, b) => a.rank - b.rank);
   return (
-    <Card className="m-3 flex max-w-2xl flex-col gap-3 p-5">
-      <h2 className="my-2 text-4xl">Projects</h2>
-      <ul className="flex flex-col items-start gap-4">
+    <div className="flex flex-col gap-3">
+      <h2 className="text-2xl font-semibold">Projects</h2>
+      <ul className="flex flex-col items-start gap-3">
         {parsed.map((project, index) => (
-          <li key={index} className="overflow-hidden ps-5">
-            <Link
-              href={`/projects/${project.slug}`}
-              className="hover:underline"
-            >
-              <h3 className="inline text-xl font-bold">{project.title}</h3>
-            </Link>
-            <p className="text-lg">{project.summary}</p>
+          <li key={index} className="overflow-hidden">
+            <div className="flex flex-col gap-1">
+              <Link
+                href={`/projects/${project.slug}`}
+                className="text-lg font-medium hover:underline"
+              >
+                {project.title}
+              </Link>
+              <span className="text-base text-muted-foreground">
+                {project.summary}
+              </span>
+            </div>
           </li>
         ))}
       </ul>
       <Link
         href="/projects"
-        className="me-auto rounded-lg  px-4 py-2 hover:bg-accent"
+        className="flex items-center gap-1 text-base text-muted-foreground hover:underline"
       >
-        View All Projects <ArrowUpRight className="inline-block" />
+        All projects
+        <ExternalLink size={16} />
       </Link>
-    </Card>
+    </div>
   );
 };

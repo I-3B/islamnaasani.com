@@ -24,6 +24,7 @@ export default async function Page() {
             getPublicPath(`content/blog/${file.split(".")[0]}`),
             "mdx",
           ) ?? "",
+          { frontmatterOnly: true },
         ),
       ),
     )
@@ -36,9 +37,9 @@ export default async function Page() {
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
   return (
     <>
-      <div className="mx-auto my-20 mt-32 flex max-w-2xl flex-col items-center gap-3 px-8">
-        <h1 className="text-5xl sm:text-7xl">Blog</h1>
-        <p className="text-center text-lg">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-4xl font-bold">Blog</h1>
+        <p className="text-lg">
           {`My personal Blog, I write about problems I've faced or new things
           I've learned.`}
         </p>
@@ -49,7 +50,7 @@ export default async function Page() {
                 <hr className="mb-5 h-1 rounded-lg border-none bg-foreground/5" />
               )}
               <Link href={`/blog/${post.slug}`}>
-                <h2 className="text-2xl text-indigo-400">
+                <h2 className="mb-1 text-xl">
                   {post.title}
                   {post.draft && " (draft)"}
                 </h2>
@@ -73,7 +74,7 @@ export default async function Page() {
                     ))}
                   </ul>
                 </div>
-                <p className="mt-2">{post.summary}</p>
+                <p className="mt-2 text-muted-foreground">{post.summary}</p>
               </Link>
             </li>
           ))}

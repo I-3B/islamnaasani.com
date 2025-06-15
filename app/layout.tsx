@@ -6,11 +6,9 @@ import "./globals.css";
 export default function App({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className="dark flex h-full min-h-screen w-full flex-col overflow-y-auto overflow-x-hidden bg-background">
-        <main className="flex-1">
-          <TopBar />
-          {children}
-        </main>
+      <body className="dark mx-auto flex h-full min-h-screen w-full max-w-2xl flex-1 flex-col gap-10 overflow-y-auto overflow-x-hidden bg-background px-6">
+        <TopBar />
+        <main>{children}</main>
         <Footer />
         {process.env.NODE_ENV === "production" && (
           <script

@@ -38,30 +38,41 @@ export const NewsletterForm: FC<NewsletterFormProps> = ({ className }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className={cn("m-1 flex flex-col gap-2", className)}
+      className={cn("m-1 flex flex-col gap-1", className)}
     >
-      <h6 className="-ms-1 text-xl sm:text-2xl">Subscribe to my Newsletter</h6>
-      <Input required placeholder="First Name" name="first_name" />
-      <Input required type="email" placeholder="Your Email" name="email" />
-      <div className="flex justify-between gap-1">
-        <p
-          className={cn(
-            "ps-2 pt-2 text-lg",
-            state == "error" && "text-red-400 ",
-          )}
-        >
-          {subscriptionState === "cancelled" &&
-            "Succeed! Please check your inbox to confirm subscription."}
-          {subscriptionState === "inactive" &&
-            "Succeed! Please check your inbox to confirm subscription."}
-          {subscriptionState === "active" && "Already subscribed!"}
-          {state === "error" && "Something went wrong, please try again!"}
-        </p>
-        <Button type="submit">
+      <h6 className="text-xl">Subscribe to my newsletter</h6>
+      <div className="grid grid-cols-3">
+        <Input
+          required
+          placeholder="First Name"
+          name="first_name"
+          className="rounded-r-none"
+        />
+        <Input
+          required
+          type="email"
+          placeholder="Your Email"
+          name="email"
+          className="rounded-none"
+        />
+        <Button type="submit" className="rounded-l-none">
           Subscribe{" "}
           {state === "loading" && <Loader2Icon className="ms-1 animate-spin" />}
         </Button>
       </div>
+      <p
+        className={cn(
+          subscriptionState && "ps-2 pt-2 text-lg",
+          state == "error" && "text-red-400 ",
+        )}
+      >
+        {subscriptionState === "cancelled" &&
+          "Succeed! Please check your inbox to confirm subscription."}
+        {subscriptionState === "inactive" &&
+          "Succeed! Please check your inbox to confirm subscription."}
+        {subscriptionState === "active" && "Already subscribed!"}
+        {state === "error" && "Something went wrong, please try again!"}
+      </p>
     </form>
   );
 };

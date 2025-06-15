@@ -62,8 +62,8 @@ export default async function Page({ params }: Props) {
     <>
       <ScrollProgress>
         <PageViewIncrementor>
-          <article className="mx-3 mt-20 flex max-w-4xl flex-col p-4 text-lg md:mx-auto md:p-10">
-            <h1 className="mb-4 text-4xl font-bold sm:text-5xl">
+          <article className="mt-10 flex flex-col text-lg">
+            <h1 className="mb-4 text-2xl font-bold sm:text-3xl">
               {matter.title}
             </h1>
             <div className="flex flex-wrap gap-2 sm:gap-3">
@@ -88,23 +88,11 @@ export default async function Page({ params }: Props) {
                   </time>
                 )}
               </div>
-              {/* <p
-              title="Page hits"
-              className="flex items-center justify-center gap-1 text-xs sm:text-base"
-            >
-              <Eye className="mb-auto h-4 w-4 sm:h-5 sm:w-5" />
-              <Suspense fallback={<Skeleton className="my-auto h-4 w-10" />}>
-                <PageHits page={`/blog/${params.slug}`} />
-              </Suspense>
-            </p> */}
             </div>
             <ul className="flex w-full list-none flex-wrap justify-end gap-1  pt-2">
               {matter.tags.map((tag) => (
                 <li key={tag}>
-                  <Badge
-                    variant="outline"
-                    className="bg-muted text-sm sm:text-lg"
-                  >
+                  <Badge variant="outline" className="bg-muted text-sm">
                     {tag}
                   </Badge>
                 </li>
@@ -124,7 +112,7 @@ export default async function Page({ params }: Props) {
           </article>
         </PageViewIncrementor>
       </ScrollProgress>
-      <div className="giscus mx-auto mb-4 max-w-3xl px-4" />
+      <div className="giscus mx-auto mb-4 px-4" />
       <Script
         src="https://giscus.app/client.js"
         data-repo="I-3B/portfolio"

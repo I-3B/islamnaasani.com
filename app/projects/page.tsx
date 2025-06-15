@@ -1,16 +1,16 @@
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Divider } from "@/components/ui/divider";
 import { readMdFile } from "@/utils/md";
 import { getPublicPath, lookupPublicFile } from "@/utils/utils";
 import { projectMatterSchema } from "@/validation/project";
 import { readdirSync } from "fs";
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Projects | Islam Naasani",
 };
+
 export default async function Page() {
   const publicPath = getPublicPath("content/projects");
   const files = readdirSync(publicPath, "utf8");
@@ -19,6 +19,7 @@ export default async function Page() {
       files.map((file) =>
         readMdFile(
           lookupPublicFile(`${publicPath}/${file.split(".")[0]}`, "mdx") ?? "",
+          { frontmatterOnly: true },
         ),
       ),
     )
@@ -28,44 +29,41 @@ export default async function Page() {
       slug: files[i].split(".")[0],
     }))
     .sort((a, b) => a.rank - b.rank);
+
   return (
-    <>
-      <h1 className="pt-32 text-center text-5xl">Projects</h1>
-      <p className="p-1 text-center text-lg">
-        Projects I&apos;ve worked on, either for work, university or personal.
-      </p>
-      <div className="mx-auto flex max-w-xl flex-col gap-3 p-3 sm:p-8">
+    <div className="">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-4xl font-bold">Projects</h1>
+        <p className="text-lg leading-relaxed text-muted-foreground">
+          Projects I&apos;ve worked on, either for work or personal.
+        </p>
+      </div>
+      <div className="mt-10 space-y-5">
         {projects.map((project, i) => (
-          <Card key={project.slug} className="bg-card/70">
-            <Link
-              href={`/projects/${project.slug}`}
-              className="flex flex-col gap-1 p-5"
-            >
-              <h3 className="text-2xl font-bold">{project.title}</h3>
-              <div className="relative my-2 h-60">
-                <Image
-                  src={project.smallCover}
-                  className="object-contain"
-                  fill
-                  priority={i === 0}
-                  sizes="(max-width: 360px) 100vw, 50vw"
-                  alt="project logo"
-                />
-              </div>
-              <p className="text-lg">{project.summary}</p>
-              <ul className="mt-auto flex w-full list-none  flex-wrap justify-end gap-1  pt-2">
-                {project.skills.map((skill) => (
-                  <li key={skill}>
-                    <Badge variant="outline" className="bg-muted">
-                      {skill}
-                    </Badge>
-                  </li>
-                ))}
-              </ul>
+          <div key={project.slug} className="group">
+            <Link href={`/projects/${project.slug}`} className="block">
+              <h2 className="mb-2 text-2xl font-bold transition-colors group-hover:text-primary">
+                {project.title}
+              </h2>
             </Link>
-          </Card>
+            <p className="mb-6 text-base leading-relaxed text-muted-foreground">
+              {project.summary}
+            </p>
+
+            <div className="flex flex-wrap gap-1">
+              {project.skills.map((skill) => (
+                <Badge
+                  key={skill}
+                  className="rounded bg-muted px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/80"
+                >
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+            {i !== projects.length - 1 && <Divider />}
+          </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
