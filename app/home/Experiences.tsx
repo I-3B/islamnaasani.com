@@ -1,5 +1,6 @@
 "use client";
 import { EXPERIENCES } from "@/data/experiences";
+import dayjs from "dayjs";
 import { FC } from "react";
 
 export type WorkProps = {};
@@ -18,8 +19,9 @@ export const Work: FC<WorkProps> = ({}) => {
                 </span>
               </div>
               <span className="text-xs text-muted-foreground">
-                ({exp.from.split("-")[0]} -{" "}
-                {exp.to ? exp.to.split("-")[0] : "present"})
+                {dayjs(exp.from).format("YYYY MMM")}
+                {exp.to && ` - ${dayjs(exp.to).format("YYYY MMM")}`}
+                {!exp.to && " - Present"}
               </span>
             </div>
             <div className="text-muted-foreground [&_a]:underline">
