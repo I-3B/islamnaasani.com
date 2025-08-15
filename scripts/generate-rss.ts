@@ -8,7 +8,8 @@ import RSS from "rss";
 async function generateRssFeed() {
   const feed = new RSS({
     title: "Islam Naasani Blog",
-    description: "My personal Blog, I write about problems I've faced or new things I've learned.",
+    description:
+      "My personal Blog, I write about problems I've faced or new things I've learned.",
     feed_url: `${process.env.NEXT_PUBLIC_CONVERTKIT_API_KEY}/rss.xml`,
     site_url: process.env.NEXT_PUBLIC_WEBSITE_URL,
     language: "en",
@@ -36,16 +37,18 @@ async function generateRssFeed() {
     }))
     .filter((post) => post.draft !== true || IS_DEVELOPMENT)
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
-    .forEach((post) => feed.item({
-      title: post.title,
-      url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/${post.slug}`,
-      guid: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/${post.slug}`,
-      date: post.publishedAt,
-      description: post.summary,
-      categories: post.tags,
-      author: "Islam Naasani",
-    }));
-writeFileSync(getPublicPath('rss.xml'), feed.xml());
+    .forEach((post) =>
+      feed.item({
+        title: post.title,
+        url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/blog/${post.slug}`,
+        guid: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/blog/${post.slug}`,
+        date: post.publishedAt,
+        description: post.summary,
+        categories: post.tags,
+        author: "Islam Naasani",
+      }),
+    );
+  writeFileSync(getPublicPath("rss.xml"), feed.xml());
   console.log("RSS feed generated successfully!");
 }
 
