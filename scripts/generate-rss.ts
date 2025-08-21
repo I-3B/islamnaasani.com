@@ -9,7 +9,7 @@ async function generateRssFeed() {
   const feed = new RSS({
     title: "Islam Naasani Blog",
     description:
-      "My personal Blog, I write about problems I've faced or new things I've learned.",
+      "My personal blog, I write about problems I've faced or new things I've learned.",
     feed_url: `${process.env.NEXT_PUBLIC_CONVERTKIT_API_KEY}/rss.xml`,
     site_url: process.env.NEXT_PUBLIC_WEBSITE_URL,
     language: "en",

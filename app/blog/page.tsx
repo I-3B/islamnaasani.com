@@ -12,7 +12,7 @@ dayjs.extend(advancedFormat);
 export const metadata: Metadata = {
   title: "Blog | Islam Naasani",
   description:
-    "My personal Blog, I write about problems I've faced or new things I've learned.",
+    "My personal blog, I write about problems I've faced or new things I've learned.",
 };
 export default async function Page() {
   const files = readdirSync(getPublicPath("content/blog"), "utf8");
@@ -40,7 +40,7 @@ export default async function Page() {
       <div className="flex flex-col gap-1">
         <h1 className="text-4xl font-bold">Blog</h1>
         <p className="text-lg">
-          {`My personal Blog, I write about problems I've faced or new things
+          {`My personal blog, I write about problems I've faced or new things
           I've learned.`}
         </p>
         <ol className="mt-10 flex flex-col gap-5">
