@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = (await readMdFile(file)).frontmatter.title as string;
   return {
     title,
+    description: "",
   };
 }
 export default async function Page({ params }: Props) {

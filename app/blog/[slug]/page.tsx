@@ -28,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ).catch((e) => console.error(e))
   )?.frontmatter;
   return {
-    title: frontmatter ? `${frontmatter.title} | Blog` : "Post Not Found",
+    title: frontmatter ? frontmatter.title : "Post Not Found",
+
     description: frontmatter ? (frontmatter.summary as string) : "",
   };
 }

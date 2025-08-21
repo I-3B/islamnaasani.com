@@ -1,8 +1,18 @@
 import { TopBar } from "@/src/components/TopBar";
+import { Metadata } from "next";
 import { ReactNode } from "react";
 import { Footer } from "../components/Footer";
 import "./globals.css";
-
+export const metadata: Metadata = {
+  title: {
+    default: "Islam Naasani",
+    template: "%s | Islam Naasani",
+  },
+  description: "Software Engineer",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
 export default function App({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>

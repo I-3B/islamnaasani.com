@@ -10,7 +10,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 dayjs.extend(advancedFormat);
 export const metadata: Metadata = {
-  title: "Blog | Islam Naasani",
+  title: "Blog",
   description:
     "My personal blog, I write about problems I've faced or new things I've learned.",
 };

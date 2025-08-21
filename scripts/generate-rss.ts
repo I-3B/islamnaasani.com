@@ -7,7 +7,7 @@ import RSS from "rss";
 
 async function generateRssFeed() {
   const feed = new RSS({
-    title: "Islam Naasani Blog",
+    title: "Islam Naasani's Blog",
     description:
       "My personal blog, I write about problems I've faced or new things I've learned.",
     feed_url: `${process.env.NEXT_PUBLIC_CONVERTKIT_API_KEY}/rss.xml`,
