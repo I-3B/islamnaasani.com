@@ -27,10 +27,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "",
     ).catch((e) => console.error(e))
   )?.frontmatter;
-  return {
-    title: frontmatter ? frontmatter.title : "Post Not Found",
 
-    description: frontmatter ? (frontmatter.summary as string) : "",
+  if (!frontmatter) {
+    return {
+      title: "Post Not Found",
+      description: "",
+    };
+  }
+
+  return {
+    title: frontmatter.title,
+    description: frontmatter.summary as string,
+    openGraph: {
+      title: frontmatter.title,
+      description: frontmatter.summary as string,
+      type: "article",
+      publishedTime: frontmatter.publishedAt,
+      modifiedTime: frontmatter.updatedAt,
+      authors: ["Islam Naasani"],
+      tags: frontmatter.tags,
+      images: [
+        {
+          url: "/opengraph-image.png",
+          width: 1200,
+          height: 630,
+          alt: `Blog post: ${frontmatter.title}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: frontmatter.title,
+      description: frontmatter.summary as string,
+      images: ["/opengraph-image.png"],
+    },
   };
 }
 export function generateStaticParams(): Props["params"][] {
