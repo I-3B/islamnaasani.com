@@ -1,4 +1,3 @@
-import { Link } from "@/components/ui/link";
 import { ReactNode } from "react";
 
 export type Experience = {
@@ -14,9 +13,9 @@ export const EXPERIENCES: Experience[] = [
   {
     title: "React Developer",
     company: (
-      <Link target="_blank" href="http://www.ulutech-sy.com/">
+      <a target="_blank" href="http://www.ulutech-sy.com/">
         Ulutech
-      </Link>
+      </a>
     ),
     location: "Aleppo, Syria",
     from: "2022-10",
@@ -53,9 +52,9 @@ export const EXPERIENCES: Experience[] = [
   {
     title: "Front-end Developer",
     company: (
-      <Link target="_blank" href="https://studio20.my/">
+      <a target="_blank" href="https://studio20.my/">
         Studio20
-      </Link>
+      </a>
     ),
     location: "Kuala Lumpur, Malaysia (Remote)",
     from: "2024-2-1",
