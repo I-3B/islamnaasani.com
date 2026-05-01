@@ -146,7 +146,7 @@ export default async function Page({ params }: Props) {
       <div className="giscus mx-auto mb-4 px-4" />
       <Script
         src="https://giscus.app/client.js"
-        data-repo="I-3B/portfolio"
+        data-repo="I-3B/islamnaasani.com"
         data-repo-id="R_kgDOKeo5Cw"
         data-category="Announcements"
         data-category-id="DIC_kwDOKeo5C84Ce_Da"
